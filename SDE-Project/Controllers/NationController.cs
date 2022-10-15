@@ -36,20 +36,26 @@ namespace SDE_Project.Controllers
 
         // POST api/<NationController>
         [HttpPost]
-        public void Post([FromBody] string value)
+        public void Post([FromBody] Nation value)
         {
+            DatabaseController database = new DatabaseController();
+            _ = database.InsertNationAsync(value);
         }
 
         // PUT api/<NationController>/5
-        [HttpPut("{id}")]
-        public void Put(int id, [FromBody] string value)
+        [HttpPut]
+        public void Put([FromBody] Nation value)
         {
+            DatabaseController database = new DatabaseController();
+            int _ret = database.UpdateNation(value);
         }
 
         // DELETE api/<NationController>/5
-        [HttpDelete("{id}")]
-        public void Delete(int id)
+        [HttpDelete("{NationCode}")]
+        public void Delete(string NationCode)
         {
+            DatabaseController database = new DatabaseController();
+            int _ret = database.DeleteNation(NationCode);
         }
     }
 }

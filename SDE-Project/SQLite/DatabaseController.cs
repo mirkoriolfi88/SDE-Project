@@ -1,13 +1,12 @@
 ﻿using SDE_Project.Models;
 using SDE_Project.Response;
 using SQLite;
-using System.Data;
 
 namespace SDE_Project.SQLite
 {
     public class DatabaseController
     {
-        private readonly string PathDatabase = "/Database/SDEProject.db3";
+        private readonly string PathDatabase = @"C:\GitRepo\SDE-Project\SDE-Project\Database\SDEProject.db3";
 
         #region Nation
 
@@ -46,20 +45,28 @@ namespace SDE_Project.SQLite
             return ID;
         }
 
-        public async Task<int> UpdateNationAsync(Nation item)
+        public int UpdateNation(Nation item)
         {
-            SQLiteAsyncConnection database = new SQLiteAsyncConnection(PathDatabase);
+            SQLiteConnection database = new SQLiteConnection(PathDatabase);
+            SQLiteCommand _command = new SQLiteCommand(database);
 
-            int ID = await database.UpdateAsync(item);
+            _command.CommandText = "UPDATE Nation SET NationDescription = '" + item.NationDescription + "' WHERE NationCode = '" + item.NationCode + "'";
+
+            int ID = _command.ExecuteNonQuery();
 
             return ID;
         }
 
-        public void DeleteNationAsync(Nation item)
+        public int DeleteNation(string NationCode)
         {
-            SQLiteAsyncConnection database = new SQLiteAsyncConnection(PathDatabase);
+            SQLiteConnection database = new SQLiteConnection(PathDatabase);
+            SQLiteCommand _command = new SQLiteCommand(database);
 
-            database.DeleteAsync(item);
+            _command.CommandText = "DELETE FROM Nation WHERE NationCode = '" + NationCode + "'";
+
+            int ID = _command.ExecuteNonQuery();
+
+            return ID;
         }
 
         #endregion
