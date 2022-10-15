@@ -19,10 +19,19 @@ namespace SDE_Project.Controllers
         }
 
         // GET api/<NationController>/5
-        [HttpGet("{id}")]
-        public string Get(int id)
+        [HttpGet("{NationCode}")]
+        public string Get(string NationCode)
         {
-            return "value";
+            DatabaseController database = new DatabaseController();
+            return database.GetNationByCode(NationCode).NationDescription;
+        }
+
+        // GET api/<NationController>/NationDescription/5
+        [HttpGet("/NationDescription/{NationCode}")]
+        public Nation GetNation(string NationCode)
+        {
+            DatabaseController database = new DatabaseController();
+            return database.GetNationByCode(NationCode);
         }
 
         // POST api/<NationController>

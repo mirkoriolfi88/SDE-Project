@@ -1,5 +1,7 @@
 ﻿using SDE_Project.Models;
+using SDE_Project.Response;
 using SQLite;
+using System.Data;
 
 namespace SDE_Project.SQLite
 {
@@ -8,19 +10,6 @@ namespace SDE_Project.SQLite
         private readonly string PathDatabase = "/Database/SDEProject.db3";
 
         #region Nation
-
-        public int GetNationID(string NationCode)
-        {
-            int IDNation = -1;
-            SQLiteAsyncConnection database = new SQLiteAsyncConnection(PathDatabase);
-
-            var NationItem = database.Table<Nation>().Where(item => item.NationCode == NationCode).FirstOrDefaultAsync();
-
-            if (NationItem != null)
-                IDNation = NationItem.Result.IDNation;
-
-            return IDNation;
-        }
 
         public List<Nation> GetAllNation()
         {
@@ -35,22 +24,33 @@ namespace SDE_Project.SQLite
             return _listNation;
         }
 
-        public async Task<int> InsertNationAsync(Nation item)
+        public Nation GetNationByCode(string CodeNation)
         {
-            int ID = -1;
+            Nation _nationResponse = new Nation();
             SQLiteAsyncConnection database = new SQLiteAsyncConnection(PathDatabase);
 
-            ID = await database.InsertAsync(item);
+            var NationItem = database.Table<Nation>().Where(item => item.NationCode == CodeNation).FirstOrDefaultAsync();
+
+            if (NationItem != null)
+                _nationResponse = NationItem.Result;
+
+            return _nationResponse;
+        }
+
+        public async Task<int> InsertNationAsync(Nation item)
+        {
+            SQLiteAsyncConnection database = new SQLiteAsyncConnection(PathDatabase);
+
+            int ID = await database.InsertAsync(item);
 
             return ID;
         }
 
         public async Task<int> UpdateNationAsync(Nation item)
         {
-            int ID = -1;
             SQLiteAsyncConnection database = new SQLiteAsyncConnection(PathDatabase);
 
-            ID = await database.UpdateAsync(item);
+            int ID = await database.UpdateAsync(item);
 
             return ID;
         }
@@ -66,17 +66,73 @@ namespace SDE_Project.SQLite
 
         #region City
 
-        public int GetCityNation(string CityDescription)
+        public NationOfCity GetCityNation(string CityCode)
         {
-            int IDCity = -1;
+            NationOfCity _response = new NationOfCity();
+
             SQLiteAsyncConnection database = new SQLiteAsyncConnection(PathDatabase);
+
+            var CityItem = database.Table<City>().Where(item => item.CityCode == CityCode).FirstOrDefaultAsync();
+
+            if (CityItem != null)
+            {
+                _response.CityDescription = CityItem.Result.CityDescription;
+
+                var NationItem = database.Table<Nation>().Where(nation => nation.NationCode == CityItem.Result.CodeNation).FirstOrDefaultAsync();
+
+                if (NationItem != null)
+                {
+                    _response._esito.Executed = true;
+                    _response._esito.ErrorCode = string.Empty;
+                    _response._esito.ErrorDescription = string.Empty;
+
+                    _response.NationDescription = NationItem.Result.NationDescription;
+                }
+                else
+                {
+                    _response._esito.Executed = false;
+                    _response._esito.ErrorCode = "01";
+                    _response._esito.ErrorDescription = "Unrecognized nation of the city.";
+
+                    _response.NationDescription = string.Empty;
+                }
+            }
+            else
+            {
+                _response._esito.Executed = false;
+                _response._esito.ErrorCode = "00";
+                _response._esito.ErrorDescription = "Unrecognized city.";
+
+                _response.NationDescription = string.Empty;
+            }
+
+            return _response;
+        }
+
+        public string GetCodeNationFromCityCode(string CityCode)
+        {
+            SQLiteAsyncConnection database = new SQLiteAsyncConnection(PathDatabase);
+            string NationCode = string.Empty;
+
+            var CityItem = database.Table<City>().Where(item => item.CityCode == CityCode).FirstOrDefaultAsync();
+
+            if (CityItem != null)
+                NationCode = CityItem.Result.CodeNation;
+
+            return NationCode;
+        }
+
+        public string GetCodeNationFromCityDescription(string CityDescription)
+        {
+            SQLiteAsyncConnection database = new SQLiteAsyncConnection(PathDatabase);
+            string NationCode = string.Empty;
 
             var CityItem = database.Table<City>().Where(item => item.CityDescription == CityDescription).FirstOrDefaultAsync();
 
             if (CityItem != null)
-                IDCity = CityItem.Result.IDCity;
+                NationCode = CityItem.Result.CodeNation;
 
-            return IDCity;
+            return NationCode;
         }
 
         public List<City> GetAllCities()
@@ -90,6 +146,31 @@ namespace SDE_Project.SQLite
                 _listNation = CityItem.ToListAsync().Result;
 
             return _listNation;
+        }
+
+        public async Task<int> InsertCityAsync(City item)
+        {
+            SQLiteAsyncConnection database = new SQLiteAsyncConnection(PathDatabase);
+
+            int ID = await database.InsertAsync(item);
+
+            return ID;
+        }
+
+        public async Task<int> UpdateCityAsync(City item)
+        {
+            SQLiteAsyncConnection database = new SQLiteAsyncConnection(PathDatabase);
+
+            int ID = await database.UpdateAsync(item);
+
+            return ID;
+        }
+
+        public void DeleteCityAsync(City item)
+        {
+            SQLiteAsyncConnection database = new SQLiteAsyncConnection(PathDatabase);
+
+            database.DeleteAsync(item);
         }
 
         #endregion
