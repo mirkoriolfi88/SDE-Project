@@ -155,6 +155,32 @@ namespace SDE_Project.SQLite
             return _listNation;
         }
 
+        public City GetCity(string CodeCity)
+        {
+            City _city = new City();
+            SQLiteAsyncConnection database = new SQLiteAsyncConnection(PathDatabase);
+
+            var CityItem = database.Table<City>().Where(item => item.CityCode == CodeCity).FirstOrDefaultAsync();
+
+            if (CityItem != null)
+                _city = CityItem.Result;
+
+            return _city;
+        }
+
+        public List<City> GetAllCitiesByNation(string NationCode)
+        {
+            List<City> _listNation = new List<City>();
+            SQLiteAsyncConnection database = new SQLiteAsyncConnection(PathDatabase);
+
+            var CityItem = database.Table<City>().Where(item => item.CodeNation == NationCode);
+
+            if (CityItem != null)
+                _listNation = CityItem.ToListAsync().Result;
+
+            return _listNation;
+        }
+
         public async Task<int> InsertCityAsync(City item)
         {
             SQLiteAsyncConnection database = new SQLiteAsyncConnection(PathDatabase);
@@ -164,20 +190,28 @@ namespace SDE_Project.SQLite
             return ID;
         }
 
-        public async Task<int> UpdateCityAsync(City item)
+        public int UpdateCity(City item)
         {
-            SQLiteAsyncConnection database = new SQLiteAsyncConnection(PathDatabase);
+            SQLiteConnection database = new SQLiteConnection(PathDatabase);
+            SQLiteCommand _command = new SQLiteCommand(database);
 
-            int ID = await database.UpdateAsync(item);
+            _command.CommandText = "UPDATE City SET CityDescription = '" + item.CityDescription + "', CodeNation = '" + item.CodeNation + "' WHERE CityCode = '" + item.CityCode + "'";
+
+            int ID = _command.ExecuteNonQuery();
 
             return ID;
         }
 
-        public void DeleteCityAsync(City item)
+        public int DeleteCity(string CityCode)
         {
-            SQLiteAsyncConnection database = new SQLiteAsyncConnection(PathDatabase);
+            SQLiteConnection database = new SQLiteConnection(PathDatabase);
+            SQLiteCommand _command = new SQLiteCommand(database);
 
-            database.DeleteAsync(item);
+            _command.CommandText = "DELETE FROM City WHERE CityCode = '" + CityCode + "'";
+
+            int ID = _command.ExecuteNonQuery();
+
+            return ID;
         }
 
         #endregion

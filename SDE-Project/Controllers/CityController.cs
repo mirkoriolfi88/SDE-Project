@@ -1,4 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using SDE_Project.Models;
+using SDE_Project.Response;
+using SDE_Project.SQLite;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -10,34 +13,58 @@ namespace SDE_Project.Controllers
     {
         // GET: api/<CityController>
         [HttpGet]
-        public IEnumerable<string> Get()
+        public List<City> Get()
         {
-            return new string[] { "value1", "value2" };
+            DatabaseController database = new DatabaseController();
+            return database.GetAllCities();
         }
 
         // GET api/<CityController>/5
-        [HttpGet("{id}")]
-        public string Get(int id)
+        [HttpGet("{CodeCity}")]
+        public City Get(string CodeCity)
         {
-            return "value";
+            DatabaseController database = new DatabaseController();
+            return database.GetCity(CodeCity);
+        }
+
+        // GET api/<CityController>/CityByNation/5
+        [HttpGet("/api/CityByNation/{NationCode}")]
+        public List<City> GetCityByNation(string NationCode)
+        {
+            DatabaseController database = new DatabaseController();
+            return database.GetAllCitiesByNation(NationCode);
+        }
+
+        // GET api/<CityController>/CityByNation/5
+        [HttpGet("/api/NationOfCity/{CityCode}")]
+        public NationOfCity GetNationOfCity(string CityCode)
+        {
+            DatabaseController database = new DatabaseController();
+            return database.GetCityNation(CityCode);
         }
 
         // POST api/<CityController>
         [HttpPost]
-        public void Post([FromBody] string value)
+        public void Post([FromBody] City value)
         {
+            DatabaseController database = new DatabaseController();
+            _ = database.InsertCityAsync(value);
         }
 
-        // PUT api/<CityController>/5
-        [HttpPut("{id}")]
-        public void Put(int id, [FromBody] string value)
+        // PUT api/<CityController>
+        [HttpPut("")]
+        public void Put([FromBody] City value)
         {
+            DatabaseController database = new DatabaseController();
+            _ = database.UpdateCity(value);
         }
 
         // DELETE api/<CityController>/5
-        [HttpDelete("{id}")]
-        public void Delete(int id)
+        [HttpDelete("{CityCode}")]
+        public void Delete(string CityCode)
         {
+            DatabaseController database = new DatabaseController();
+            _ = database.DeleteCity(CityCode);
         }
     }
 }
