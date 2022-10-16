@@ -181,13 +181,14 @@ namespace SDE_Project.SQLite
             return _listNation;
         }
 
-        public async Task<int> InsertCityAsync(City item)
+        public int InsertCityAsync(City item)
         {
-            SQLiteAsyncConnection database = new SQLiteAsyncConnection(PathDatabase);
+            SQLiteConnection database = new SQLiteConnection(PathDatabase);
+            SQLiteCommand _command = new SQLiteCommand(database);
 
-            int ID = await database.InsertAsync(item);
+            _command.CommandText = "INSERT into City (CityCode, CityDescription, CodeNation) VALUES ('" + item.CityCode + "', '" + item.CityDescription + "', '" + item.CodeNation + "')";
 
-            return ID;
+            return _command.ExecuteNonQuery();
         }
 
         public int UpdateCity(int ID, City item)
@@ -227,7 +228,10 @@ namespace SDE_Project.SQLite
                 _objToInsert.Longitude = item.Longitude;
                 _objToInsert.Description = item.Description;
 
-                return database.Insert(_objToInsert);
+                SQLiteCommand _command = new SQLiteCommand(database);
+                _command.CommandText = "INSERT INTO PointOfInterest (IDCity, Description, Latitude, Longitude) VALUES (" + City.IDCity.ToString() + ", '" + item.Description + "', '" + item.Latitude + "', '" + item.Longitude + "')";
+
+                return _command.ExecuteNonQuery();
             }
             else
                 return -1;
