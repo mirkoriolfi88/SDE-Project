@@ -190,28 +190,129 @@ namespace SDE_Project.SQLite
             return ID;
         }
 
-        public int UpdateCity(City item)
+        public int UpdateCity(int ID, City item)
         {
             SQLiteConnection database = new SQLiteConnection(PathDatabase);
             SQLiteCommand _command = new SQLiteCommand(database);
 
-            _command.CommandText = "UPDATE City SET CityDescription = '" + item.CityDescription + "', CodeNation = '" + item.CodeNation + "' WHERE CityCode = '" + item.CityCode + "'";
+            _command.CommandText = "UPDATE City SET CityDescription = '" + item.CityDescription + "', CodeNation = '" + item.CodeNation + "', CityCode = '" + item.CityCode + "' WHERE IDCity = " + ID.ToString();
 
-            int ID = _command.ExecuteNonQuery();
-
-            return ID;
+            return _command.ExecuteNonQuery();
         }
 
-        public int DeleteCity(string CityCode)
+        public int DeleteCity(int ID)
         {
             SQLiteConnection database = new SQLiteConnection(PathDatabase);
             SQLiteCommand _command = new SQLiteCommand(database);
 
-            _command.CommandText = "DELETE FROM City WHERE CityCode = '" + CityCode + "'";
+            _command.CommandText = "DELETE FROM City WHERE IDCity = " + ID.ToString();
 
-            int ID = _command.ExecuteNonQuery();
+            return _command.ExecuteNonQuery(); ;
+        }
 
-            return ID;
+        #endregion
+
+        #region PoinOfInterest
+
+        public int InsertPointOfInterest(PoinInterestRequest item)
+        {
+            SQLiteConnection database = new SQLiteConnection(PathDatabase);
+            PointOfInterest _objToInsert = new PointOfInterest();
+            var City = database.Table<City>().Where(obj => obj.CityCode == item.CityCode && obj.CodeNation == item.NationCode).FirstOrDefault();
+
+            if (City != null)
+            {
+                _objToInsert.IDCity = City.IDCity;
+                _objToInsert.Latitude = item.Latitude;
+                _objToInsert.Longitude = item.Longitude;
+                _objToInsert.Description = item.Description;
+
+                return database.Insert(_objToInsert);
+            }
+            else
+                return -1;
+        }
+
+        public int UpdatePointOfInterest(int IDPoint, PointOfInterest item)
+        {
+            SQLiteConnection database = new SQLiteConnection(PathDatabase);
+
+            return database.Update(item);
+        }
+
+        public int DeletePointOfInterest(int IDPoint)
+        {
+            SQLiteConnection database = new SQLiteConnection(PathDatabase);
+            SQLiteCommand _command = new SQLiteCommand(database);
+
+            _command.CommandText = "DELETE FROM PointOfInterest WHERE ID = " + IDPoint.ToString() + "";
+
+            return _command.ExecuteNonQuery();
+        }
+
+        public PointOfInterest GetPointOfInterestByID(int ID)
+        {
+            SQLiteConnection database = new SQLiteConnection(PathDatabase);
+
+            return (PointOfInterest)database.Get(ID, database.Table<PointOfInterest>().Table);
+        }
+
+        public DetailsPointInterestResponse DetailOfPointOfInterest(string NationCode, string CityCode)
+        {
+            DetailsPointInterestResponse response = new DetailsPointInterestResponse();
+            SQLiteConnection database = new SQLiteConnection(PathDatabase);
+
+            var NationItem = database.Table<Nation>().Where(obj => obj.NationCode == NationCode).FirstOrDefault();
+
+            if (NationItem != null)
+            {
+                var CityItem = database.Table<City>().Where(item => item.CityCode == CityCode && item.CodeNation == NationCode);
+
+                if (CityItem != null)
+                {
+                    List<City> _citiesList = CityItem.ToList();
+                    var Points = database.Table<PointOfInterest>();
+
+                    List<PointOfInterest> _resPoint = Points.ToList();
+
+                    _resPoint = _resPoint.Where(item => _citiesList.Any(obj => obj.IDCity == item.IDCity)).ToList();
+
+                    if (_resPoint.Count > 0)
+                    {
+                        response.esito = new Esito() { ErrorCode = string.Empty, ErrorDescription = string.Empty, Executed = true };
+
+                        foreach (PointOfInterest obj in _resPoint)
+                        {
+                            var CityProperty = _citiesList.Where(c => c.IDCity == obj.IDCity).FirstOrDefault();
+
+                            response.details.Add(new DetailsPoint()
+                            {
+                                item = obj,
+                                CityDescription = CityProperty.CityDescription,
+                                NationCode = NationItem.NationCode,
+                                NationDescription = NationItem.NationDescription
+                            });
+                        }
+                    }
+                    else
+                    {
+                        response.esito = new Esito() { ErrorCode = "02", ErrorDescription = "No point of interest to the city", Executed = false };
+                        response.details = new List<DetailsPoint>();
+                    }
+                }
+                else
+                {
+                    response.esito = new Esito() { ErrorCode = "02", ErrorDescription = "No city and/or wrong code sent", Executed = false };
+                    response.details = new List<DetailsPoint>();
+                }
+            }
+            else
+            {
+                response.esito = new Esito() { ErrorCode = "01", ErrorDescription = "Wrong Nation Code", Executed = false };
+                response.details = new List<DetailsPoint>();
+            }
+
+            return response;
         }
 
         #endregion

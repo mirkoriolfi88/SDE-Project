@@ -52,19 +52,19 @@ namespace SDE_Project.Controllers
         }
 
         // PUT api/<CityController>
-        [HttpPut("")]
-        public void Put([FromBody] City value)
+        [HttpPut("{ID}")]
+        public void Put(int ID, [FromBody] City value)
         {
             DatabaseController database = new DatabaseController();
-            _ = database.UpdateCity(value);
+            _ = database.UpdateCity(ID, value);
         }
 
         // DELETE api/<CityController>/5
-        [HttpDelete("{CityCode}")]
-        public void Delete(string CityCode)
+        [HttpDelete("{ID}")]
+        public void Delete(int ID)
         {
             DatabaseController database = new DatabaseController();
-            _ = database.DeleteCity(CityCode);
+            _ = database.DeleteCity(ID);
         }
     }
 }
