@@ -315,6 +315,133 @@ namespace SDE_Project.SQLite
             return response;
         }
 
+        public List<PointOfInterest> GetAllPointOfInterestByNationAndCode(string NationCode, string CityCode)
+        {
+            List<PointOfInterest> _response = new List<PointOfInterest>();
+
+            SQLiteConnection database = new SQLiteConnection(PathDatabase);
+            var CityItem = database.Table<City>().Where(item => item.CityCode == CityCode && item.CodeNation == NationCode);
+
+            if (CityItem != null)
+            {
+                List<City> _cityList = CityItem.ToList();
+
+                var Points = database.Table<PointOfInterest>();
+
+                _response = Points.ToList();
+                _response = _response.Where(item => _cityList.Any(obj => obj.IDCity == item.IDCity)).ToList();
+            }
+
+            return _response;
+        }
+
+        public List<PointOfInterest> GetAllPointOfInterestByLongitude(string LongitudeValue)
+        {
+            List<PointOfInterest> _response = new List<PointOfInterest>();
+
+            SQLiteConnection database = new SQLiteConnection(PathDatabase);
+
+            var Points = database.Table<PointOfInterest>().Where(obj => obj.Longitude == LongitudeValue);
+            _response = Points.ToList();
+
+            return _response;
+        }
+
+        public List<PointOfInterest> GetAllPointOfInterestByLatitude(string LatitudeValue)
+        {
+            List<PointOfInterest> _response = new List<PointOfInterest>();
+
+            SQLiteConnection database = new SQLiteConnection(PathDatabase);
+
+            var Points = database.Table<PointOfInterest>().Where(obj => obj.Latitude == LatitudeValue);
+            _response = Points.ToList();
+
+            return _response;
+        }
+
+        public List<PointOfInterest> GetAllPointOfInterestByNationAndDescription(string NationCode, string PointDescription)
+        {
+            List<PointOfInterest> _response = new List<PointOfInterest>();
+
+            SQLiteConnection database = new SQLiteConnection(PathDatabase);
+            var CityItem = database.Table<City>().Where(item => item.CodeNation == NationCode);
+
+            if (CityItem != null)
+            {
+                List<City> _citiesList = CityItem.ToList();
+                var Points = database.Table<PointOfInterest>();
+                _response = Points.ToList();
+
+                _response = _response.Where(item => _citiesList.Any(obj => obj.IDCity == item.IDCity)).ToList();
+                _response = _response.Where(obj => obj.Description.Contains(PointDescription)).ToList();
+            }
+
+            return _response;
+        }
+
+        public List<PointOfInterest> GetAllPointOfInterestByNation(string NationCode)
+        {
+            List<PointOfInterest> _response = new List<PointOfInterest>();
+
+            SQLiteConnection database = new SQLiteConnection(PathDatabase);
+            var CityItem = database.Table<City>().Where(item => item.CodeNation == NationCode);
+
+            if (CityItem != null)
+            {
+                List<City> _citiesList = CityItem.ToList();
+                var Points = database.Table<PointOfInterest>();
+                _response = Points.ToList();
+
+                _response = _response.Where(item => _citiesList.Any(obj => obj.IDCity == item.IDCity)).ToList();
+            }
+
+            return _response;
+        }
+
+        public List<PointOfInterest> GetAllPointOfInterestByCityAndDescription(int IDCity, string PointDescription)
+        {
+            List<PointOfInterest> _response = new List<PointOfInterest>();
+            SQLiteConnection database = new SQLiteConnection(PathDatabase);
+            
+            var Points = database.Table<PointOfInterest>().Where(obj => obj.IDCity == IDCity && obj.Description.Contains(PointDescription));
+            _response = Points.ToList();
+
+            return _response;
+        }
+
+        public List<PointOfInterest> GetAllPointOfInterestByCity(int IDCity)
+        {
+            List<PointOfInterest> _response = new List<PointOfInterest>();
+            SQLiteConnection database = new SQLiteConnection(PathDatabase);
+
+            var Points = database.Table<PointOfInterest>().Where(obj => obj.IDCity == IDCity);
+            _response = Points.ToList();
+
+            return _response;
+        }
+
+        public List<PointOfInterest> GetAllPointOfInterest()
+        {
+            List<PointOfInterest> _response = new List<PointOfInterest>();
+            SQLiteConnection database = new SQLiteConnection(PathDatabase);
+
+            var Points = database.Table<PointOfInterest>();
+            _response = Points.ToList();
+
+            return _response;
+        }
+
+        public PointOfInterest GetAllPointOfInterestById(int IDPoint)
+        {
+            PointOfInterest _response = new PointOfInterest();
+            SQLiteConnection database = new SQLiteConnection(PathDatabase);
+
+            var Points = database.Table<PointOfInterest>().Where(obj => obj.ID == IDPoint).FirstOrDefault();
+            _response = Points;
+
+            return _response;
+        }
+
         #endregion
     }
 }

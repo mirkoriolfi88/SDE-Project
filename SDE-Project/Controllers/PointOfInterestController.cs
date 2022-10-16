@@ -16,7 +16,7 @@ namespace SDE_Project.Controllers
         public List<PointOfInterest> Get()
         {
             DatabaseController database = new DatabaseController();
-            return new List<PointOfInterest>();
+            return database.GetAllPointOfInterest();
         }
 
         // GET api/<PointOfInterestController>/5
@@ -24,23 +24,23 @@ namespace SDE_Project.Controllers
         public PointOfInterest Get(int id)
         {
             DatabaseController database = new DatabaseController();
-            return new PointOfInterest();
+            return database.GetAllPointOfInterestById(id);
         }
 
         // GET api/<PointOfInterestController>/5
         [HttpGet("/api/PointByCity/{CodeCity}")]
-        public List<PointOfInterest> GetPointByCityCode(string CodeCity)
+        public List<PointOfInterest> GetPointByCity(int IDCity)
         {
             DatabaseController database = new DatabaseController();
-            return new List<PointOfInterest>();
+            return database.GetAllPointOfInterestByCity(IDCity);
         }
 
         // GET api/<PointOfInterestController>/5
-        [HttpGet("/api/PointByCityAndPoint/{CodeCity}/Description/{PointDescription}")]
-        public List<PointOfInterest> GetPointByCityCodeAndPointDescription(string CodeCity, string PointDescription)
+        [HttpGet("/api/PointByCityAndPoint/{IDCity}/Description/{PointDescription}")]
+        public List<PointOfInterest> GetPointByCityAndPointDescription(int IDCity, string PointDescription)
         {
             DatabaseController database = new DatabaseController();
-            return new List<PointOfInterest>();
+            return database.GetAllPointOfInterestByCityAndDescription(IDCity, PointDescription);
         }
 
         // GET api/<PointOfInterestController>/5
@@ -48,7 +48,7 @@ namespace SDE_Project.Controllers
         public List<PointOfInterest> GetPointByNationCode(string NationCode)
         {
             DatabaseController database = new DatabaseController();
-            return new List<PointOfInterest>();
+            return database.GetAllPointOfInterestByNation(NationCode);
         }
 
         // GET api/<PointOfInterestController>/5
@@ -56,7 +56,7 @@ namespace SDE_Project.Controllers
         public List<PointOfInterest> GetPointByNationCodeAndPointDescription(string NationCode, string PointDescription)
         {
             DatabaseController database = new DatabaseController();
-            return new List<PointOfInterest>();
+            return database.GetAllPointOfInterestByNationAndDescription(NationCode, PointDescription);
         }
 
         // GET api/<PointOfInterestController>/5
@@ -64,7 +64,7 @@ namespace SDE_Project.Controllers
         public List<PointOfInterest> GetPointByLatitude(string LatitudeValue)
         {
             DatabaseController database = new DatabaseController();
-            return new List<PointOfInterest>();
+            return database.GetAllPointOfInterestByLatitude(LatitudeValue);
         }
 
         // GET api/<PointOfInterestController>/5
@@ -72,7 +72,7 @@ namespace SDE_Project.Controllers
         public List<PointOfInterest> GetPointByLongitude(string LongitudeValue)
         {
             DatabaseController database = new DatabaseController();
-            return new List<PointOfInterest>();
+            return database.GetAllPointOfInterestByLongitude(LongitudeValue);
         }
 
         // GET api/<PointOfInterestController>/5
@@ -80,7 +80,7 @@ namespace SDE_Project.Controllers
         public List<PointOfInterest> GetPointByNationAndCity(string NationCode, string CityCode)
         {
             DatabaseController database = new DatabaseController();
-            return new List<PointOfInterest>();
+            return database.GetAllPointOfInterestByNationAndCode(NationCode, CityCode);
         }
 
         [HttpGet("/api/AllDetailPointByNationAndCity/{NationCode}/City/{CityCode}")]
