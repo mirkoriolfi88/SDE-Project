@@ -31,16 +31,26 @@ namespace SDE_Project.SQLite
             var NationItem = database.Table<Nation>().Where(item => item.NationCode == CodeNation).FirstOrDefaultAsync();
 
             if (NationItem != null)
+            {
                 _nationResponse = NationItem.Result;
+
+                if (_nationResponse == null)
+                    _nationResponse = new Nation();
+            }
+            else
+                _nationResponse = new Nation();
 
             return _nationResponse;
         }
 
         public async Task<int> InsertNationAsync(Nation item)
         {
+            int ID = -1;
+
             SQLiteAsyncConnection database = new SQLiteAsyncConnection(PathDatabase);
 
-            int ID = await database.InsertAsync(item);
+            if (string.IsNullOrEmpty(GetNationByCode(item.NationCode).NationCode))
+                ID = await database.InsertAsync(item);
 
             return ID;
         }
@@ -163,7 +173,14 @@ namespace SDE_Project.SQLite
             var CityItem = database.Table<City>().Where(item => item.CityCode == CodeCity).FirstOrDefaultAsync();
 
             if (CityItem != null)
+            {
                 _city = CityItem.Result;
+
+                if (_city == null)
+                    _city = new City();
+            }
+            else
+                _city = new City();
 
             return _city;
         }
@@ -183,12 +200,17 @@ namespace SDE_Project.SQLite
 
         public int InsertCityAsync(City item)
         {
+            int ret = -1;
             SQLiteConnection database = new SQLiteConnection(PathDatabase);
             SQLiteCommand _command = new SQLiteCommand(database);
 
-            _command.CommandText = "INSERT into City (CityCode, CityDescription, CodeNation) VALUES ('" + item.CityCode + "', '" + item.CityDescription + "', '" + item.CodeNation + "')";
+            if (GetCity(item.CityCode).IDCity <= 0)
+            {
+                _command.CommandText = "INSERT into City (CityCode, CityDescription, CodeNation) VALUES ('" + item.CityCode + "', '" + item.CityDescription + "', '" + item.CodeNation + "')";
+                ret = _command.ExecuteNonQuery();
+            }
 
-            return _command.ExecuteNonQuery();
+            return ret;
         }
 
         public int UpdateCity(int ID, City item)

@@ -7,5 +7,14 @@
         public string Description { get; set; }
         public string Latitude { get; set; }
         public string Longitude { get; set; }
+
+        public PointOfInterest()
+        {
+            ID = -1;
+            IDCity = -1;
+            Description = string.Empty;
+            Latitude = string.Empty;
+            Longitude = string.Empty;
+        }
     }
 }
