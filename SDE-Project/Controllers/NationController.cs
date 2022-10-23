@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using SDE_Project.Models;
+using SDE_Project.Response;
 using SDE_Project.SQLite;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
@@ -36,10 +37,12 @@ namespace SDE_Project.Controllers
 
         // POST api/<NationController>
         [HttpPost]
-        public void Post([FromBody] Nation value)
+        public async Task<NationInsertionResponse> Post([FromBody] Nation value)
         {
             DatabaseController database = new DatabaseController();
-            _ = database.InsertNationAsync(value);
+            NationInsertionResponse response = await database.InsertNationAsync(value);
+
+            return response;
         }
 
         // PUT api/<NationController>/5

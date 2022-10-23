@@ -43,16 +43,32 @@ namespace SDE_Project.SQLite
             return _nationResponse;
         }
 
-        public async Task<int> InsertNationAsync(Nation item)
+        public async Task<NationInsertionResponse> InsertNationAsync(Nation item)
         {
-            int ID = -1;
+            NationInsertionResponse _response = new NationInsertionResponse();
 
             SQLiteAsyncConnection database = new SQLiteAsyncConnection(PathDatabase);
 
             if (string.IsNullOrEmpty(GetNationByCode(item.NationCode).NationCode))
-                ID = await database.InsertAsync(item);
+            {
+                await database.InsertAsync(item);
 
-            return ID;
+                _response._esito.Executed = true;
+                _response._esito.ErrorCode = "";
+                _response._esito.ErrorDescription = "";
+
+                _response.NationCode = GetNationByCode(item.NationCode).NationCode;
+            }
+            else
+            {
+                _response._esito.Executed = false;
+                _response._esito.ErrorCode = "00";
+                _response._esito.ErrorDescription = "The Nation has already been on master data";
+
+                _response.NationCode = item.NationCode;
+            }
+
+            return _response;
         }
 
         public int UpdateNation(Nation item)
@@ -185,6 +201,26 @@ namespace SDE_Project.SQLite
             return _city;
         }
 
+        public City GetCityByCodeAndNation(string CodeCity, string NationCode)
+        {
+            City _city = new City();
+            SQLiteAsyncConnection database = new SQLiteAsyncConnection(PathDatabase);
+
+            var CityItem = database.Table<City>().Where(item => item.CityCode == CodeCity && item.CodeNation == NationCode).FirstOrDefaultAsync();
+
+            if (CityItem != null)
+            {
+                _city = CityItem.Result;
+
+                if (_city == null)
+                    _city = new City();
+            }
+            else
+                _city = new City();
+
+            return _city;
+        }
+
         public List<City> GetAllCitiesByNation(string NationCode)
         {
             List<City> _listNation = new List<City>();
@@ -198,19 +234,33 @@ namespace SDE_Project.SQLite
             return _listNation;
         }
 
-        public int InsertCityAsync(City item)
+        public CityInsertionResponse InsertCity(City item)
         {
-            int ret = -1;
+            CityInsertionResponse _response = new CityInsertionResponse();
             SQLiteConnection database = new SQLiteConnection(PathDatabase);
             SQLiteCommand _command = new SQLiteCommand(database);
 
-            if (GetCity(item.CityCode).IDCity <= 0)
+            if (GetCityByCodeAndNation(item.CityCode, item.CodeNation).IDCity <= 0)
             {
                 _command.CommandText = "INSERT into City (CityCode, CityDescription, CodeNation) VALUES ('" + item.CityCode + "', '" + item.CityDescription + "', '" + item.CodeNation + "')";
-                ret = _command.ExecuteNonQuery();
+                _command.ExecuteNonQuery();
+
+                _response._esito.Executed = true;
+                _response._esito.ErrorCode = "";
+                _response._esito.ErrorDescription = "";
+
+                _response.IDCity = GetCity(item.CityCode).IDCity;
+            }
+            else
+            {
+                _response._esito.Executed = false;
+                _response._esito.ErrorCode = "00";
+                _response._esito.ErrorDescription = "The city has already been in master data!";
+
+                _response.IDCity = GetCity(item.CityCode).IDCity;
             }
 
-            return ret;
+            return _response;
         }
 
         public int UpdateCity(int ID, City item)
@@ -241,17 +291,17 @@ namespace SDE_Project.SQLite
         {
             SQLiteConnection database = new SQLiteConnection(PathDatabase);
             PointOfInterest _objToInsert = new PointOfInterest();
-            var City = database.Table<City>().Where(obj => obj.CityCode == item.CityCode && obj.CodeNation == item.NationCode).FirstOrDefault();
+            int IDCity = GetCityByCodeAndNation(item.CityCode, item.NationCode).IDCity;
 
-            if (City != null)
+            if (IDCity > 0)
             {
-                _objToInsert.IDCity = City.IDCity;
+                _objToInsert.IDCity = IDCity;
                 _objToInsert.Latitude = item.Latitude;
                 _objToInsert.Longitude = item.Longitude;
                 _objToInsert.Description = item.Description;
 
                 SQLiteCommand _command = new SQLiteCommand(database);
-                _command.CommandText = "INSERT INTO PointOfInterest (IDCity, Description, Latitude, Longitude) VALUES (" + City.IDCity.ToString() + ", '" + item.Description + "', '" + item.Latitude + "', '" + item.Longitude + "')";
+                _command.CommandText = "INSERT INTO PointOfInterest (IDCity, Description, Latitude, Longitude) VALUES (" + IDCity.ToString() + ", '" + item.Description + "', '" + item.Latitude + "', '" + item.Longitude + "')";
 
                 return _command.ExecuteNonQuery();
             }

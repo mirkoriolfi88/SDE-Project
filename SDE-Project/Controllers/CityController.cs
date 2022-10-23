@@ -45,10 +45,12 @@ namespace SDE_Project.Controllers
 
         // POST api/<CityController>
         [HttpPost]
-        public void Post([FromBody] City value)
+        public CityInsertionResponse Post([FromBody] City value)
         {
             DatabaseController database = new DatabaseController();
-            _ = database.InsertCityAsync(value);
+            CityInsertionResponse response = database.InsertCity(value);
+
+            return response;
         }
 
         // PUT api/<CityController>
