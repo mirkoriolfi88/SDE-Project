@@ -1,0 +1,11 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<!--
+https://go.microsoft.com/fwlink/?LinkID=208121.
+-->
+<Project>
+  <PropertyGroup>
+    <_PublishTargetUrl>C:\GitRepo\SDE-Project\SDE-Project\bin\Release\net6.0\publish\</_PublishTargetUrl>
+    <History>True|2022-11-01T12:04:16.4483329Z;</History>
+    <LastFailureDetails />
+  </PropertyGroup>
+</Project>
