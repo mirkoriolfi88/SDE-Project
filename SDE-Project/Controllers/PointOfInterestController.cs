@@ -21,7 +21,7 @@ namespace SDE_Project.Controllers
 
         // GET api/<PointOfInterestController>/5
         [HttpGet("{id}")]
-        public PointOfInterest Get(int id)
+        public PoinOfInterestWithActivity Get(int id)
         {
             DatabaseController database = new DatabaseController();
             return database.GetAllPointOfInterestById(id);
@@ -34,7 +34,8 @@ namespace SDE_Project.Controllers
             DatabaseController database = new DatabaseController();
             return database.GetAllPointOfInterestByCity(IDCity);
         }
-
+        
+        /*
         // GET api/<PointOfInterestController>/5
         [HttpGet("/api/PointByCityAndPoint/{IDCity}/Description/{PointDescription}")]
         public List<PointOfInterest> GetPointByCityAndPointDescription(int IDCity, string PointDescription)
@@ -88,7 +89,7 @@ namespace SDE_Project.Controllers
         {
             DatabaseController database = new DatabaseController();
             return database.DetailOfPointOfInterest(NationCode, CityCode);
-        }
+        }*/
 
         // POST api/<PointOfInterestController>
         [HttpPost]

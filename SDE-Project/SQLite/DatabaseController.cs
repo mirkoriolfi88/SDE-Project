@@ -1,4 +1,5 @@
-﻿using SDE_Project.Models;
+﻿using BingMapsRESTToolkit;
+using SDE_Project.Models;
 using SDE_Project.Response;
 using SQLite;
 
@@ -293,6 +294,27 @@ namespace SDE_Project.SQLite
             PointOfInterest _objToInsert = new PointOfInterest();
             int IDCity = GetCityByCodeAndNation(item.CityCode, item.NationCode).IDCity;
 
+            string _ApiKey = "AjjlMHgnmg_TLEotFJwVxSWYb1A7NCWTTL2w9SzVNi9PZwDPeLoKRZ7lPxXjKNat";
+
+            if (string.IsNullOrEmpty(item.Latitude) || string.IsNullOrEmpty(item.Longitude))
+            {
+                //retrive the data with Bing Map
+                var request = new GeocodeRequest()
+                {
+                    BingMapsKey = _ApiKey,
+                    UserRegion = "IT",
+                    Query = item.Description + " " + item.CityCode
+                };
+
+                var resources = GetResourcesFromRequest(request);
+
+                if (resources.Length > 0)
+                {
+                    item.Latitude = ((Location)resources.FirstOrDefault()).Point.Coordinates[0].ToString();
+                    item.Longitude = ((Location)resources.FirstOrDefault()).Point.Coordinates[1].ToString();
+                }
+            }
+
             if (IDCity > 0)
             {
                 _objToInsert.IDCity = IDCity;
@@ -478,7 +500,7 @@ namespace SDE_Project.SQLite
         {
             List<PointOfInterest> _response = new List<PointOfInterest>();
             SQLiteConnection database = new SQLiteConnection(PathDatabase);
-            
+
             var Points = database.Table<PointOfInterest>().Where(obj => obj.IDCity == IDCity && obj.Description.Contains(PointDescription));
             _response = Points.ToList();
 
@@ -507,15 +529,76 @@ namespace SDE_Project.SQLite
             return _response;
         }
 
-        public PointOfInterest GetAllPointOfInterestById(int IDPoint)
+        public PoinOfInterestWithActivity GetAllPointOfInterestById(int IDPoint)
         {
-            PointOfInterest _response = new PointOfInterest();
+            PointOfInterest _point = new PointOfInterest();
             SQLiteConnection database = new SQLiteConnection(PathDatabase);
+            List<BusinessActivity> _listActivity = new List<BusinessActivity>();
+
+            PoinOfInterestWithActivity _response = new PoinOfInterestWithActivity();
 
             var Points = database.Table<PointOfInterest>().Where(obj => obj.ID == IDPoint).FirstOrDefault();
-            _response = Points;
+            _point = Points;
+
+            if(_point.ID != null)
+            {
+                if (_point.ID > 0)
+                {
+                    Coordinate cpoint = new Coordinate(double.Parse(_point.Latitude.Replace('.', ',')), double.Parse(_point.Longitude.Replace('.', ',')));
+
+                    try
+                    {
+                        var request = new LocationRecogRequest()
+                        {
+                            BingMapsKey = "AjjlMHgnmg_TLEotFJwVxSWYb1A7NCWTTL2w9SzVNi9PZwDPeLoKRZ7lPxXjKNat"
+                            ,CenterPoint = cpoint
+                            ,Radius = 2
+                            ,DistanceUnits = DistanceUnitType.Kilometers
+                        };
+
+                        var resources = GetResourcesFromRequest(request);
+                        var r = (resources[0] as LocationRecog);
+
+                        if (r.AddressOfLocation.Length > 0)
+                            Console.WriteLine($"Address:\n{r.AddressOfLocation.ToString()}");
+
+                        if (r.BusinessAtLocation != null)
+                        {
+                            foreach (LocalBusiness business in r.BusinessAtLocation)
+                            {
+                                BusinessActivity _item = new BusinessActivity()
+                                {
+                                    EntityName = business.BusinessInfo.EntityName
+                                    ,Address = business.BusinessAddress.FormattedAddress
+                                    ,Phone = business.BusinessInfo.Phone != null ? business.BusinessInfo.Phone : string.Empty
+                                };
+
+                                _listActivity.Add(_item);
+                            }
+                        }
+                    }
+                    catch (Exception) { }
+                }
+            }
+
+            _response._pointOfInterest = _point;
+            _response._listActivity = _listActivity;
 
             return _response;
+        }
+
+        static Resource[] GetResourcesFromRequest(BaseRestRequest rest_request)
+        {
+            var r = ServiceManager.GetResponseAsync(rest_request).GetAwaiter().GetResult();
+
+            if (!(r != null && r.ResourceSets != null &&
+                r.ResourceSets.Length > 0 &&
+                r.ResourceSets[0].Resources != null &&
+                r.ResourceSets[0].Resources.Length > 0))
+
+                throw new Exception("No results found.");
+
+            return r.ResourceSets[0].Resources;
         }
 
         #endregion

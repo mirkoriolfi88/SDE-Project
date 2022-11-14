@@ -45,6 +45,14 @@
         "net6.0": {
           "targetAlias": "net6.0",
           "dependencies": {
+            "BingMapsRESTToolkit": {
+              "target": "Package",
+              "version": "[1.1.4, )"
+            },
+            "BingMapsRESTToolkit.Standard": {
+              "target": "Package",
+              "version": "[1.1.6, )"
+            },
             "Microsoft.OpenApi": {
               "target": "Package",
               "version": "[1.4.3, )"
