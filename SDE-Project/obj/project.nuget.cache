@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "dgSpecHash": "f6Ts7EnsYo6C0j3l2mJLp1rI0v6wI9Gs+OR1JhfgloXv2zF2ufRUrOuJeBdZKQrzeogpG6U9MpyeIYnirMRqYQ==",
+  "dgSpecHash": "C5xriPue3KI0TNHWFdmUz6ejZlAAbaEjYnx7+umdrXYCuzMsAZNXlSX9J/K/E0j5ZqhUFbL7c7Q1QNBxcgbZsw==",
   "success": true,
   "projectFilePath": "C:\\GitRepo\\SDE-Project\\SDE-Project\\SDE-Project.csproj",
   "expectedPackageFiles": [
@@ -10,6 +10,7 @@
     "C:\\Users\\tarta\\.nuget\\packages\\microsoft.netcore.platforms\\1.1.0\\microsoft.netcore.platforms.1.1.0.nupkg.sha512",
     "C:\\Users\\tarta\\.nuget\\packages\\microsoft.netcore.targets\\1.1.0\\microsoft.netcore.targets.1.1.0.nupkg.sha512",
     "C:\\Users\\tarta\\.nuget\\packages\\microsoft.openapi\\1.4.3\\microsoft.openapi.1.4.3.nupkg.sha512",
+    "C:\\Users\\tarta\\.nuget\\packages\\microsoft.visualstudio.azure.containers.tools.targets\\1.17.0\\microsoft.visualstudio.azure.containers.tools.targets.1.17.0.nupkg.sha512",
     "C:\\Users\\tarta\\.nuget\\packages\\sqlite-net-pcl\\1.8.116\\sqlite-net-pcl.1.8.116.nupkg.sha512",
     "C:\\Users\\tarta\\.nuget\\packages\\sqlitepclraw.bundle_green\\2.0.4\\sqlitepclraw.bundle_green.2.0.4.nupkg.sha512",
     "C:\\Users\\tarta\\.nuget\\packages\\sqlitepclraw.core\\2.0.4\\sqlitepclraw.core.2.0.4.nupkg.sha512",
