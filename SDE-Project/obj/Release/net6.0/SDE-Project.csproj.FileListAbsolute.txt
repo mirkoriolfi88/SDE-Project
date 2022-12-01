@@ -49,3 +49,4 @@ C:\GitRepo\SDE-Project\SDE-Project\obj\Release\net6.0\staticwebassets\msbuild.bu
 C:\GitRepo\SDE-Project\SDE-Project\obj\Release\net6.0\staticwebassets\msbuild.buildMultiTargeting.SDE-Project.props
 C:\GitRepo\SDE-Project\SDE-Project\obj\Release\net6.0\staticwebassets\msbuild.buildTransitive.SDE-Project.props
 C:\GitRepo\SDE-Project\SDE-Project\obj\Release\net6.0\staticwebassets.pack.json
+C:\GitRepo\SDE-Project\SDE-Project\bin\Release\net6.0\Database\SDEProject.db3

@@ -1,3 +1,4 @@
+C:\GitRepo\SDE-Project\SDE-Project\obj\Docker\publish\Database\SDEProject.db3
 C:\GitRepo\SDE-Project\SDE-Project\obj\Docker\publish\SDE-Project.exe
 C:\GitRepo\SDE-Project\SDE-Project\obj\Docker\publish\appsettings.Development.json
 C:\GitRepo\SDE-Project\SDE-Project\obj\Docker\publish\appsettings.json

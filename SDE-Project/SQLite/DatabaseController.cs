@@ -7,7 +7,8 @@ namespace SDE_Project.SQLite
 {
     public class DatabaseController
     {
-        private readonly string PathDatabase = @"C:\Database\SDEProject.db3";
+        private readonly string PathDatabase = AppDomain.CurrentDomain.BaseDirectory + @"\Database\SDEProject.db3";
+        //private readonly string PathDatabase = AppDomain.CurrentDomain.BaseDirectory + @"/Database/SDEProject.db3";
 
         #region Nation
 

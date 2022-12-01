@@ -1,6 +1,7 @@
 C:\GitRepo\SDE-Project\SDE-Project\bin\Debug\net6.0\appsettings.Development.json
 C:\GitRepo\SDE-Project\SDE-Project\bin\Debug\net6.0\appsettings.json
 C:\GitRepo\SDE-Project\SDE-Project\bin\Debug\net6.0\SDE-Project.exe
+C:\GitRepo\SDE-Project\SDE-Project\bin\Debug\net6.0\Database\SDEProject.db3
 C:\GitRepo\SDE-Project\SDE-Project\bin\Debug\net6.0\SDE-Project.deps.json
 C:\GitRepo\SDE-Project\SDE-Project\bin\Debug\net6.0\SDE-Project.runtimeconfig.json
 C:\GitRepo\SDE-Project\SDE-Project\bin\Debug\net6.0\SDE-Project.dll
