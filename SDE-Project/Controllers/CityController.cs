@@ -21,7 +21,7 @@ namespace SDE_Project.Controllers
 
         // GET api/<CityController>/5
         [HttpGet("{CodeCity}")]
-        public City Get(string CodeCity)
+        public CityWithCurrentWeather Get(string CodeCity)
         {
             DatabaseController database = new DatabaseController();
             return database.GetCity(CodeCity);

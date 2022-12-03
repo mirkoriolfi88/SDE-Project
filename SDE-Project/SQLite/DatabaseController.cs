@@ -2,6 +2,7 @@
 using Newtonsoft.Json;
 using SDE_Project.Models;
 using SDE_Project.Response;
+using SDE_Project.WeatherClass;
 using SQLite;
 using System.Net;
 
@@ -234,8 +235,9 @@ namespace SDE_Project.SQLite
             return _listNation;
         }
 
-        public City GetCity(string CodeCity)
+        public CityWithCurrentWeather GetCity(string CodeCity)
         {
+            CityWithCurrentWeather _response = new CityWithCurrentWeather();
             City _city = new City();
             SQLiteAsyncConnection database = new SQLiteAsyncConnection(PathDatabase);
 
@@ -246,12 +248,67 @@ namespace SDE_Project.SQLite
                 _city = CityItem.Result;
 
                 if (_city == null)
-                    _city = new City();
+                    _response = new CityWithCurrentWeather();
+                else
+                {
+                    _response.IDCity = _city.IDCity;
+                    _response.CityCode = _city.CityCode;
+                    _response.CodeNation = _city.CodeNation;
+                    _response.CityDescription = _city.CityDescription;
+
+                    string textToSearch = "apikey=M9JrCiPpaSrAft6DmRALfMsOoKIUEJyo&q=" + _city.CityDescription + ", " + _city.CodeNation + "&language=en-EN&details=false";
+                    string locationKey = string.Empty;
+
+                    try
+                    {
+                        WebRequest request = WebRequest.Create("http://dataservice.accuweather.com/locations/v1/cities/search?" + textToSearch);
+                        request.ContentType = "application/json; charset=utf-8";
+
+                        request.Method = "GET";
+
+                        string text;
+                        var response = (HttpWebResponse)request.GetResponse();
+
+                        using (var sr = new StreamReader(response.GetResponseStream()))
+                        {
+                            text = sr.ReadToEnd();
+                        }
+
+                        List<CitySearcher> accuweatherSearch = JsonConvert.DeserializeObject<List<CitySearcher>>(text);
+                        locationKey = accuweatherSearch[0].Key;
+                    }
+                    catch (Exception) { }
+
+                    if (locationKey != null)
+                    {
+                        try
+                        {
+                            textToSearch = "apikey=M9JrCiPpaSrAft6DmRALfMsOoKIUEJyo&language=en-EN&details=false";
+                            WebRequest request = WebRequest.Create("http://dataservice.accuweather.com/currentconditions/v1/" + locationKey + "?" + textToSearch);
+                            request.ContentType = "application/json; charset=utf-8";
+
+                            request.Method = "GET";
+
+                            string text;
+                            var response = (HttpWebResponse)request.GetResponse();
+
+                            using (var sr = new StreamReader(response.GetResponseStream()))
+                            {
+                                text = sr.ReadToEnd();
+                            }
+
+                            List<CurrentConditions> weatherConditions = JsonConvert.DeserializeObject<List<CurrentConditions>>(text);
+
+                            _response.currentConditions = weatherConditions;
+                        }
+                        catch (Exception) { }
+                    }
+                }
             }
             else
-                _city = new City();
+                _response = new CityWithCurrentWeather();
 
-            return _city;
+            return _response;
         }
 
         public City GetCityByCodeAndNation(string CodeCity, string NationCode)
