@@ -1,7 +1,9 @@
 ﻿using BingMapsRESTToolkit;
+using Newtonsoft.Json;
 using SDE_Project.Models;
 using SDE_Project.Response;
 using SQLite;
+using System.Net;
 
 namespace SDE_Project.SQLite
 {
@@ -25,22 +27,71 @@ namespace SDE_Project.SQLite
             return _listNation;
         }
 
-        public Nation GetNationByCode(string CodeNation)
+        public NationResponseData GetNationByCode(string CodeNation)
         {
-            Nation _nationResponse = new Nation();
+            NationResponseData _nationResponse = new NationResponseData();
             SQLiteAsyncConnection database = new SQLiteAsyncConnection(PathDatabase);
 
             var NationItem = database.Table<Nation>().Where(item => item.NationCode == CodeNation).FirstOrDefaultAsync();
 
             if (NationItem != null)
             {
-                _nationResponse = NationItem.Result;
+                Nation _nation = NationItem.Result;
 
-                if (_nationResponse == null)
-                    _nationResponse = new Nation();
+                if (_nation == null)
+                    _nationResponse = new NationResponseData();
+                else
+                {
+                    _nationResponse.NationCode = _nation.NationCode;
+                    _nationResponse.NationDescription = _nation.NationDescription;
+
+                    try
+                    {
+                        WebRequest request = WebRequest.Create("https://restcountries.com/v3.1/alpha/" + CodeNation);
+                        request.ContentType = "application/json; charset=utf-8";
+
+                        request.Method = "GET";
+
+                        string text;
+                        var response = (HttpWebResponse)request.GetResponse();
+
+                        using (var sr = new StreamReader(response.GetResponseStream()))
+                        {
+                            text = sr.ReadToEnd();
+                        }
+
+                        dynamic doStuff = JsonConvert.DeserializeObject(text);
+
+                        if (doStuff != null)
+                        {
+                            _nationResponse.region = doStuff[0].region.ToString();
+                            _nationResponse.subregion = doStuff[0].subregion.ToString();
+                            _nationResponse.area = Convert.ToDouble(doStuff[0].area.ToString());
+
+                            _nationResponse.borders = JsonConvert.DeserializeObject<List<string>>(doStuff[0].borders.ToString());
+                            _nationResponse.timeZone = JsonConvert.DeserializeObject<List<string>>(doStuff[0].timezones.ToString());
+                            _nationResponse.maps = JsonConvert.DeserializeObject<MapsClass>(doStuff[0].maps.ToString());
+                            _nationResponse.continents = JsonConvert.DeserializeObject<List<string>>(doStuff[0].continents.ToString());
+
+                            Dictionary<string, Dictionary<string, string>> deser = JsonConvert.DeserializeObject<Dictionary<string, Dictionary<string, string>>>(doStuff[0].currencies.ToString());
+
+                            foreach (string _key in deser.Keys)
+                            {
+                                Currencies currencyObj = new Currencies()
+                                {
+                                    name = deser[_key]["name"],
+                                    symbol = deser[_key]["symbol"]
+                                };
+
+                                _nationResponse.currencies.Add(currencyObj);
+                            }
+                        }
+                    }
+                    catch (Exception) { }
+                }
             }
             else
-                _nationResponse = new Nation();
+                _nationResponse = new NationResponseData();
 
             return _nationResponse;
         }
@@ -541,7 +592,7 @@ namespace SDE_Project.SQLite
             var Points = database.Table<PointOfInterest>().Where(obj => obj.ID == IDPoint).FirstOrDefault();
             _point = Points;
 
-            if(_point.ID != null)
+            if (_point.ID != null)
             {
                 if (_point.ID > 0)
                 {
@@ -552,9 +603,12 @@ namespace SDE_Project.SQLite
                         var request = new LocationRecogRequest()
                         {
                             BingMapsKey = "AjjlMHgnmg_TLEotFJwVxSWYb1A7NCWTTL2w9SzVNi9PZwDPeLoKRZ7lPxXjKNat"
-                            ,CenterPoint = cpoint
-                            ,Radius = 2
-                            ,DistanceUnits = DistanceUnitType.Kilometers
+                            ,
+                            CenterPoint = cpoint
+                            ,
+                            Radius = 2
+                            ,
+                            DistanceUnits = DistanceUnitType.Kilometers
                         };
 
                         var resources = GetResourcesFromRequest(request);
@@ -570,8 +624,10 @@ namespace SDE_Project.SQLite
                                 BusinessActivity _item = new BusinessActivity()
                                 {
                                     EntityName = business.BusinessInfo.EntityName
-                                    ,Address = business.BusinessAddress.FormattedAddress
-                                    ,Phone = business.BusinessInfo.Phone != null ? business.BusinessInfo.Phone : string.Empty
+                                    ,
+                                    Address = business.BusinessAddress.FormattedAddress
+                                    ,
+                                    Phone = business.BusinessInfo.Phone != null ? business.BusinessInfo.Phone : string.Empty
                                 };
 
                                 _listActivity.Add(_item);

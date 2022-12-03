@@ -29,7 +29,7 @@ namespace SDE_Project.Controllers
 
         // GET api/<NationController>/NationDescription/5
         [HttpGet("/api/NationDescription/{NationCode}")]
-        public Nation GetNation(string NationCode)
+        public NationResponseData GetNation(string NationCode)
         {
             DatabaseController database = new DatabaseController();
             return database.GetNationByCode(NationCode);

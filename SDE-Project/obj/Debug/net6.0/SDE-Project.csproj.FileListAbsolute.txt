@@ -8,6 +8,7 @@ C:\GitRepo\SDE-Project\SDE-Project\bin\Debug\net6.0\SDE-Project.dll
 C:\GitRepo\SDE-Project\SDE-Project\bin\Debug\net6.0\SDE-Project.pdb
 C:\GitRepo\SDE-Project\SDE-Project\bin\Debug\net6.0\BingMapsRESTToolkit.dll
 C:\GitRepo\SDE-Project\SDE-Project\bin\Debug\net6.0\Microsoft.OpenApi.dll
+C:\GitRepo\SDE-Project\SDE-Project\bin\Debug\net6.0\Newtonsoft.Json.dll
 C:\GitRepo\SDE-Project\SDE-Project\bin\Debug\net6.0\SQLite-net.dll
 C:\GitRepo\SDE-Project\SDE-Project\bin\Debug\net6.0\SQLitePCLRaw.batteries_v2.dll
 C:\GitRepo\SDE-Project\SDE-Project\bin\Debug\net6.0\SQLitePCLRaw.nativelibrary.dll
