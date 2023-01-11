@@ -8,6 +8,7 @@ C:\GitRepo\SDE-Project\SDE-Project\obj\Docker\publish\SDE-Project.runtimeconfig.
 C:\GitRepo\SDE-Project\SDE-Project\obj\Docker\publish\SDE-Project.pdb
 C:\GitRepo\SDE-Project\SDE-Project\obj\Docker\publish\BingMapsRESTToolkit.dll
 C:\GitRepo\SDE-Project\SDE-Project\obj\Docker\publish\Microsoft.OpenApi.dll
+C:\GitRepo\SDE-Project\SDE-Project\obj\Docker\publish\Newtonsoft.Json.dll
 C:\GitRepo\SDE-Project\SDE-Project\obj\Docker\publish\SQLite-net.dll
 C:\GitRepo\SDE-Project\SDE-Project\obj\Docker\publish\SQLitePCLRaw.batteries_v2.dll
 C:\GitRepo\SDE-Project\SDE-Project\obj\Docker\publish\SQLitePCLRaw.nativelibrary.dll

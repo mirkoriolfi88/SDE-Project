@@ -10,8 +10,8 @@ namespace SDE_Project.SQLite
 {
     public class DatabaseController
     {
-        private readonly string PathDatabase = AppDomain.CurrentDomain.BaseDirectory + @"\Database\SDEProject.db3";
-        //private readonly string PathDatabase = AppDomain.CurrentDomain.BaseDirectory + @"/Database/SDEProject.db3";
+        //private readonly string PathDatabase = AppDomain.CurrentDomain.BaseDirectory + @"\Database\SDEProject.db3";
+        private readonly string PathDatabase = AppDomain.CurrentDomain.BaseDirectory + @"/Database/SDEProject.db3";
 
         #region Nation
 
@@ -648,6 +648,9 @@ namespace SDE_Project.SQLite
 
             var Points = database.Table<PointOfInterest>().Where(obj => obj.ID == IDPoint).FirstOrDefault();
             _point = Points;
+
+            if(_point == null)
+                return _response;
 
             if (_point.ID != null)
             {
